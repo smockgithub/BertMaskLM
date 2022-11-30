@@ -5,7 +5,7 @@
    Desc    ：该脚本只支持bert和gpt2的训练。经过代码抽象后，要求当修改model_name=bert时，
              能够自动调用bert分词，训练Bert模型；当修改model_name=gpt2时，能够自动调用
              gpt分词，训练gpt模型.
-             目前不支持char模式。
+             目前不支持char模式。 
    Vocab   : SougouBertVocab共68181个词汇，它们是过滤了Sougou语料词频不大于6*1e-7的词
              后，与bert-base-chinese自带的vocab取并集 
 """
