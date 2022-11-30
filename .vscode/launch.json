@@ -1,0 +1,46 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid,830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Curr File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: train.py bert",
+            "type": "python",
+            "request": "launch",
+            "program": "./train.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--trainfile","./train/sougou/sougou_train_title.txt",
+                "--usegpu","0", //如果非调试用gpu
+                "--device","0",
+                "--modelname","bert",
+                "--vocabpath","./vocab/SougouBertVocab.txt",
+                "--batchsize","4"
+            ]
+        },
+        {
+            "name": "Python: inference.py",
+            "type": "python",
+            "request": "launch",
+            "program": "./inference.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--mode","1",
+                "--p_mask","0.15",
+                "--model","./modelfile/bert/bert_sougou_word_epoch_0.bin",
+                "--vocabpath","./vocab/SougouBertVocab.txt"
+            ]
+        }
+    ]
+}

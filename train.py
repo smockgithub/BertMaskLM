@@ -10,6 +10,8 @@
              后，与bert-base-chinese自带的vocab取并集 
 """
 
+import os
+os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 import torch
 import logging
 import argparse
@@ -48,7 +50,7 @@ def parse_args():
                         default='sougou',
                         help='trainging corpus name')
     parser.add_argument('--vocabpath', type=str, 
-                        default='./vocab/SougouBertVocab.txt', 
+                        default='./vocab/bert_chinese_vocab.txt', 
                         help='vocabulary file')
     parser.add_argument('--batchsize', type=int, default=2, 
                         help='set your batch_size')
@@ -214,7 +216,7 @@ def train(model,
                     accuracy = (torch.sum(masked_pre==masked_label)/masked_label.numel()).item()
                 loss = outputs.loss.mean() if multi_gpu else outputs.loss
                 if gg%(0.1*args.showstep)==9:
-                    info2 = bertshow_predict_vs_actual(inputs, labels, outputs)
+                    info2 = bertshow_predict_vs_actual(inputs, labels, outputs,tokenizer.tokenizer.convert_ids_to_tokens,batchs)
                     tb_writer.add_text('predict-vs-actural',info2,ee*len(train_iter)+gg)
                     tb_writer.close()
             if speci_var == 1:

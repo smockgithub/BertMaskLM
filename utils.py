@@ -262,7 +262,9 @@ def draw_boxvioplot(ppl,filename:str=None, group:int=30, isLog=True, Tvalue:floa
     plt.show()
 
 def bertshow_predict_vs_actual(inputs, labels, outputs, 
-                           transfer = tokenizer.tokenizer.convert_ids_to_tokens):
+                           transfer,batchsize=2):
+
+#transfer = tokenizer.tokenizer.convert_ids_to_tokens
     '''
     function show_predict_vs_actual can generate markdown format string for 
         better showing our train or test effect.
@@ -282,9 +284,10 @@ def bertshow_predict_vs_actual(inputs, labels, outputs,
         DESCRIPTION : info2 is markdown string, it can't identified as table by
         tensorboard.
     '''
+
     
     ind = torch.ones_like(labels)
-    for kk in range(args.batchsize):
+    for kk in range(batchsize):
         ind[kk] *= kk
     ind = torch.where(labels != -100, ind, labels)
     ind = ind[ind != -100]
@@ -331,7 +334,8 @@ def bertshow_predict_vs_actual(inputs, labels, outputs,
     return info2
 
 def gptshow_predict_vs_actual(inputs, labels, outputs, 
-                           transfer = tokenizer.tokenizer.convert_ids_to_tokens):
+                           transfer):
+# transfer = tokenizer.tokenizer.convert_ids_to_tokens
     
     translist = list(map(transfer, inputs))
     # labelist  = list(map(transfer, labels))
@@ -460,6 +464,7 @@ def judge_change(dic, isdouble=False):
 
 class BertTokenTool:
     def __init__(self, vocab_path):
+        # Can't find a vocabulary file at path './vocab/SougouBertVocab.txt'. To load the vocabulary from a Google pretrained model use `tokenizer = BertTokenizer.from_pretrained(PRETRAINED_MODEL_NAME)`
         self.tokenizer = BertTokenizer(vocab_path,
                                        do_lower_case=True,
                                        do_basic_tokenize=True,
@@ -540,6 +545,7 @@ class GptTokenTool:
                                        tokenize_chinese_chars=False,
                                        strip_accents=None,
                                        )
+
     def tokenize(self, word_list, max_length=300, truncation=True, 
                  padding=True):
         
@@ -562,7 +568,7 @@ class MyDataset(Data.Dataset):
         """
         total_count = 0
         # get the count of all samples
-        with open(file_path, 'r') as f:
+        with open(file_path, 'r',encoding="utf-8") as f:
             for _ in f:
                 total_count += 1
         self.file_path = file_path
@@ -576,7 +582,7 @@ class MyDataset(Data.Dataset):
         return text
 
     def initial(self):
-        self.file_input = open(self.file_path, 'r')
+        self.file_input = open(self.file_path, 'r',encoding="utf-8")
         self.samples = []
         # put nraw samples into memory
         for _ in range(self.n_raws):

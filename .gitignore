@@ -1,0 +1,7 @@
+log/bert/
+modelfile/
+testdata/
+tensorboard/
+train/sougou/
+train/train_data/
+__pycache__/

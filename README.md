@@ -1,5 +1,80 @@
 # BertMaskLM
 
+# 安装说明
+- 确定cuda版本，11.7
+- 下载安装pytorch，https://pytorch.org/get-started/locally/ ： conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
+- 安装requirements.txt，pip install -r requirements.txt
+debugg config
+````
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid,830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: train.py bert",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--trainfile","./train/train.txt",
+                "--usegpu","0", //如果非调试用gpu
+                "--device","1",
+                "--modelname","bert",
+                "--vocabpath","./vocab/bert_chinese_vocab.txt"
+            ]
+        }
+    ]
+}
+````
+
+- train
+```
+python train.py --trainfile=./train/sougou/sougou_train_content.txt --usegpu=1 --device=0 --modelname=bert --vocabpath=./vocab/SougouBertVocab.txt --batchsize=4
+
+结果：
+o disable this warning
+  warnings.warn(
+The Initial Date = 11-30
+bert is training which based on corpus ./train/train.txt
+The log information is saved in : ./log/bert/train_11-30_train_log.txt
+Building prefix dict from the default dictionary ...
+Loading model from cache C:\Users\smock\AppData\Local\Temp\jieba.cache
+Loading model cost 0.573 seconds.
+Prefix dict has been built successfully.
+Backend TkAgg is interactive backend. Turning interactive mode on.
+epoch = 0
+         batch = 9       loss = 11.17952         acc = 0.000     cost_time = 51.049s
+we get model ./modelfile/bert/bert_sougou_word_epoch_0.bin
+tensorboard information has been recorded in ./tensorboard/bert/train_11-30_train
+training done!
+```
+- SougouBertVocab.txt文件很关键，不一样的文件结果是天差地别!
+- 调整了vocab需要调整BertConfig的vocab_size
+
+
+
+
+# 问题
+CUDA_LAUNCH_BLOCKING=1
+```
+import os
+os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
+
+或则采用cpu
+```
+
+CUDA error: invalid device ordinal
+```
+https://blog.csdn.net/Dartao/article/details/124150851
+
+显卡如果只有一张，一般入参改为 --device=0
+```
+
+
 # 描述
 该模型基于Transformers中的BertForMaskLM , 该模型通过jieba分词，下载了搜狗新闻数据，使用结巴分词对语料进行按词切分，然后使用Bert模型进行训练，依据bert模型的mask规则，一个语料数据中，除去特殊词汇，'[CLS]','[SEP]','[UNK]','[PAD]'以外，对剩下的（即能够有效利用）的词汇进行mask，mask的规则是15%的概率被mask，而对于所有的被mask的词汇，采用下述规则\
 - 80%的词汇使用特殊token[MASK]
