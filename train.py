@@ -7,7 +7,7 @@
              gpt分词，训练gpt模型.
              目前不支持char模式。
    Vocab   : SougouBertVocab共68181个词汇，它们是过滤了Sougou语料词频不大于6*1e-7的词
-             后，与bert-base-chinese自带的vocab取并集
+             后，与bert-base-chinese自带的vocab取并集 
 """
 
 import torch
